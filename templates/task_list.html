@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<!-- Tasks Created by the User -->
+{% if created_tasks %}
+    <h3>Tasks You Created</h3>
+    <ul class="task-list">
+        {% for task in created_tasks %}
+            <li style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #ccc; line-height: 1.8;">
+                <strong>{{ forloop.counter }}. {{ task.name }}</strong> <br>
+                <strong>Description:</strong> {{ task.description }} <br>
+                <strong>Task Type:</strong> {{ task.task_type }} <br>
+                <strong>Status:</strong> <span style="color: #007bff;">{{ task.status }}</span> <br>
+                <strong>Created At:</strong> {{ task.created_at }} <br>
+                {% if task.completed_at %}
+                    <strong>Completed At:</strong> {{ task.completed_at }} <br>
+                {% endif %}
+
+                <strong>Assigned Users:</strong>
+                <ul style="margin: 5px 0; padding: 0;">
+                    {% for user in task.assigned_users.all %}
+                        <li style="display: inline-block; background: #f4f4f4; padding: 5px 10px; 
+                                   border-radius: 5px; margin-right: 5px;">
+                            {{ user.username }}
+                        </li>
+                    {% empty %}
+                        <li style="color: #777;">No users assigned</li>
+                    {% endfor %}
+                </ul>
+
+                <!-- Assign Users Button -->
+                {% if task.status != "Completed" %}
+                    <a href="{% url 'assign_users' task.id %}" class="button" 
+                    style="display: inline-block; margin-top: 10px;">Assign Users</a>
+                {% endif %}
+
+                <!-- ✅ Show Status Update Form If User is Assigned to Their Own Task -->
+                {% if request.user in task.assigned_users.all and task.status != "Completed" %}
+                    <form method="POST" action="{% url 'update_task_status' task.id %}" style="margin-top: 10px;">
+                        {% csrf_token %}
+                        <label>Update Status:</label>
+                        <select name="status" style="margin-left: 10px;">
+                            <option value="Pending" {% if task.status == "Pending" %}selected{% endif %}>Pending</option>
+                            <option value="In Progress" {% if task.status == "In Progress" %}selected{% endif %}>In Progress</option>
+                            <option value="Completed" {% if task.status == "Completed" %}selected{% endif %}>Completed</option>
+                        </select>
+                        <button type="submit" style="margin-left: 10px;">Update</button>
+                    </form>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <h3>Tasks You Created</h3>
+    <p>No tasks created yet.</p>
+{% endif %}
+
+<!-- Tasks Assigned to the User -->
+{% if assigned_tasks %}
+    <h3>Tasks Assigned to You</h3>
+    <ul class="task-list">
+        {% for task in assigned_tasks %}
+            <li style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #ccc; line-height: 1.8;">
+                <strong>{{ forloop.counter }}. {{ task.name }}</strong> <br>
+                <strong>Description:</strong> {{ task.description }} <br>
+                <strong>Task Type:</strong> {{ task.task_type }} <br>
+                <strong>Status:</strong> <span style="color: #007bff;">{{ task.status }}</span> <br>
+                <strong>Created At:</strong> {{ task.created_at }} <br>
+                {% if task.completed_at %}
+                    <strong>Completed At:</strong> {{ task.completed_at }} <br>
+                {% endif %}
+
+                <strong>Assigned Users:</strong>
+                <ul style="margin: 5px 0; padding: 0;">
+                    {% for user in task.assigned_users.all %}
+                        <li style="display: inline-block; background: #f4f4f4; padding: 5px 10px; 
+                                   border-radius: 5px; margin-right: 5px;">
+                            {{ user.username }}
+                        </li>
+                    {% endfor %}
+                </ul>
+
+                <!-- ✅ Show Status Update Form for Assigned Tasks -->
+                {% if task.status != "Completed" %}
+                    <form method="POST" action="{% url 'update_task_status' task.id %}" style="margin-top: 10px;">
+                        {% csrf_token %}
+                        <label>Update Status:</label>
+                        <select name="status" style="margin-left: 10px;">
+                            <option value="Pending" {% if task.status == "Pending" %}selected{% endif %}>Pending</option>
+                            <option value="In Progress" {% if task.status == "In Progress" %}selected{% endif %}>In Progress</option>
+                            <option value="Completed" {% if task.status == "Completed" %}selected{% endif %}>Completed</option>
+                        </select>
+                        <button type="submit" style="margin-left: 10px;">Update</button>
+                    </form>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <h3>Tasks Assigned to You</h3>
+    <p>No tasks assigned to you.</p>
+{% endif %}
+
+<!-- Create Task Button -->
+<a href="{% url 'task_create' %}" class="button">Create Task</a>
+
+{% endblock %}

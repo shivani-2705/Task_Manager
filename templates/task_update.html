@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Update Task Status</h3>
+<form method="POST">
+    {% csrf_token %}
+    
+    <label>Task Name:</label>
+    <input type="text" value="{{ task.name }}" disabled><br><br>
+
+    <label>Description:</label>
+    <textarea disabled>{{ task.description }}</textarea><br><br>
+
+    <label>Task Type:</label>
+    <input type="text" value="{{ task.task_type }}" disabled><br><br>
+
+    <label>Status:</label>
+    <select name="status">
+        <option value="Pending" {% if task.status == "Pending" %}selected{% endif %}>Pending</option>
+        <option value="In Progress" {% if task.status == "In Progress" %}selected{% endif %}>In Progress</option>
+        <option value="Completed" {% if task.status == "Completed" %}selected{% endif %}>Completed</option>
+    </select><br><br>
+
+    <button type="submit">Update Status</button>
+</form>
+
+<a href="{% url 'task_list' %}" class="button">Back to Tasks</a>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Create New Task</h3>
+
+{% if error %}
+    <p style="color: red;">{{ error }}</p>
+{% endif %}
+
+<form method="POST">
+    {% csrf_token %}
+    
+    <label>Task Name:</label>
+    <input type="text" name="name" required minlength="3" maxlength="255"><br>
+
+    <label>Description:</label>
+    <textarea name="description" required></textarea><br>
+
+    <label>Task Type:</label>
+    <select name="task_type" required>
+        <option value="" disabled selected>Select Task Type</option>
+        <option value="Bug">Bug</option>
+        <option value="Feature">Feature</option>
+        <option value="Improvement">Improvement</option>
+        <option value="Research">Research</option>
+    </select><br>
+
+    <label>Assign to Users:</label><br>
+    <div style="display: flex; flex-direction: column; align-items: flex-start;">
+        {% for user in users %}
+            <label style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" name="assigned_users" value="{{ user.id }}" 
+                    style="width: 18px; height: 18px; cursor: pointer;">
+                <span style="font-size: 16px; font-weight: 500;">{{ user.username }}</span>
+            </label>
+        {% empty %}
+            <p style="color: #777;">No users available</p>
+        {% endfor %}
+    </div> <br>
+
+
+    <button type="submit">Create Task</button>
+</form>
+
+<a href="{% url 'task_list' %}" class="button">Back to Task List</a>
+{% endblock %}

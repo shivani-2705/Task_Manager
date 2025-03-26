@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Assign Users to Task: {{ task.name }}</h3>
+
+<!-- ✅ Completely Hide Assign Form & Button If Task is Completed -->
+{% if task.status != "Completed" %}
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Select Users to Assign:</label><br>
+        <div style="display: flex; flex-direction: column; align-items: flex-start;">
+            
+            <!-- ✅ Show "Assign to Yourself" option only if not already assigned -->
+            {% if user not in task.assigned_users.all %}
+                <label style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" name="assigned_users" value="{{ user.id }}" 
+                        style="width: 18px; height: 18px; cursor: pointer;">
+                    <span style="font-size: 16px; font-weight: 500;">Assign to Yourself ({{ user.username }})</span>
+                </label>
+            {% endif %}
+
+            <!-- ✅ Show only users who are NOT already assigned -->
+            {% for user in users %}
+                {% if user not in task.assigned_users.all %}
+                    <label style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" name="assigned_users" value="{{ user.id }}" 
+                               style="width: 18px; height: 18px; cursor: pointer;">
+                        <span style="font-size: 16px; font-weight: 500;">{{ user.username }}</span>
+                    </label>
+                {% endif %}
+            {% empty %}
+                <p style="color: #777;">No users available to assign.</p>
+            {% endfor %}
+        </div>
+
+        <!-- ✅ Button is INSIDE the conditional check -->
+        <button type="submit">Assign Users</button>
+    </form>
+{% else %}
+    <p style="color: red; font-weight: bold;">Task is completed. You cannot assign more users.</p>
+{% endif %}
+
+<a href="{% url 'task_list' %}" class="button">Back to Task List</a>
+{% endblock %}
