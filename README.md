@@ -4,8 +4,8 @@ Task Manager is a Django-based application that allows users to create, assign, 
 
 ## Features
 - User authentication (Register, Login, Logout)
-- Task creation 
-- Assign a task to users
+- Task creation with optional assignment to users
+- Assign users to an existing task
 - Update task status
 - View tasks assigned to a user
 - REST API endpoints for task management
@@ -19,10 +19,10 @@ Task Manager is a Django-based application that allows users to create, assign, 
 | `/login/` | GET, POST | User login page |
 | `/register/` | GET, POST | User registration page |
 | `/logout/` | GET | Logout user and redirect to login |
-| `web/tasks/` | GET | Displays tasks created by or assigned to the logged-in user |
-| `web/tasks/create/` | GET, POST | GET: Displays the task creation form. POST: Creates a new task.|
-| `web/tasks/<task_id>/assign/` | GET, POST | GET: Show available users for assignment. POST: Assigns users to the task.|
-| `web/tasks/update_status/<task_id>/` | POST | Update the status of a task |
+| `/tasks/` | GET | Displays tasks created by or assigned to the logged-in user |
+| `/tasks/create/` | GET, POST | Create a new task (with optional user assignment) |
+| `/tasks/<task_id>/assign/` | GET, POST | Assign users to an existing task |
+| `/tasks/update_status/<task_id>/` | POST | Update the status of a task |
 
 ---
 
@@ -30,13 +30,13 @@ Task Manager is a Django-based application that allows users to create, assign, 
 
 | Endpoint | Method | Description |
 |-----------|--------|-------------|
-| `web/api/tasks/` | GET | Fetch all tasks assigned to a specific user (requires `email` query parameter) |
-| `web/api/tasks/create/` | POST | Create a new task |
-| `web/api/tasks/<task_id>/assign/` | POST | Assign a task to users |
+| `/api/tasks/` | GET | Fetch all tasks assigned to a specific user (requires `email` query parameter) |
+| `/api/tasks/create/` | POST | Create a new task |
+| `/api/tasks/<task_id>/assign/` | POST | Assign a task to users |
 
 ### **API Request & Response Examples**
 
-#### 1️⃣ Create a Task (POST `web/api/tasks/create/`)
+#### 1️⃣ Create a Task (POST `/api/tasks/create/`)
 ##### Request:
 ```json
 {
@@ -93,8 +93,8 @@ Task Manager is a Django-based application that allows users to create, assign, 
 
 ### **1️⃣ Clone the Repository**
 ```sh
-git clone https://github.com/your-repo/task-manager.git
-cd task-manager
+git clone https://github.com/shivani-2705/Task_Manager.git
+cd task_manager
 ```
 
 ### **2️⃣ Install Dependencies**
@@ -102,17 +102,50 @@ cd task-manager
 pip install -r requirements.txt
 ```
 
-### **3️⃣ Run Migrations**
-```sh
-python manage.py makemigrations\python manage.py migrate
+### **3️⃣ Set Up Environment Variables**
+Create a `.env` file in the root directory and add the following:
+```ini
+SECRET_KEY=your-secret-key
+DEBUG=True
+DATABASE_NAME=task_manager
+DATABASE_USER=your_db_user
+DATABASE_PASSWORD=your_db_password
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
 ```
 
-### **4️⃣ Create a Superuser**
+### **4️⃣ Configure Database (PostgreSQL)**
+Ensure PostgreSQL is installed and running. Then create a database:
+```sh
+psql -U your_db_user -c "CREATE DATABASE task_manager;"
+```
+Update `settings.py` to use environment variables for database configuration:
+```python
+import os
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DATABASE_NAME'),
+        'USER': os.getenv('DATABASE_USER'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+        'HOST': os.getenv('DATABASE_HOST'),
+        'PORT': os.getenv('DATABASE_PORT'),
+    }
+}
+```
+
+### **5️⃣ Run Migrations**
+```sh
+python manage.py makemigrations
+python manage.py migrate
+```
+
+### **6️⃣ Create a Superuser**
 ```sh
 python manage.py createsuperuser
 ```
 
-### **5️⃣ Start the Server**
+### **7️⃣ Start the Server**
 ```sh
 python manage.py runserver
 ```
