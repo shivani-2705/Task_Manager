@@ -3,9 +3,8 @@ from django.db import models
 from django.core.validators import RegexValidator, validate_email
 from django.utils.timezone import now
 
-# ==============================
-# 🚀 USER MODEL
-# ==============================
+
+#  USER MODEL
 
 class User(AbstractUser):
     """
@@ -33,9 +32,9 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
 
-# ==============================
-# 🚀 TASK MODEL
-# ==============================
+
+# TASK MODEL
+
 
 class Task(models.Model):
     """
@@ -67,7 +66,7 @@ class Task(models.Model):
     assigned_users = models.ManyToManyField(User, related_name='tasks', blank=True)
 
     class Meta:
-        ordering = ['-created_at']  # ✅ Show newest tasks first
+        ordering = ['-created_at']  # Show newest tasks first
 
     def save(self, *args, **kwargs):
         """
@@ -81,8 +80,8 @@ class Task(models.Model):
         """
         Ensure all Many-to-Many relations are removed before deleting the task.
         """
-        self.assigned_users.clear()  # ✅ Remove all user-task relationships
-        super().delete(*args, **kwargs)  # ✅ Now delete task safely
+        self.assigned_users.clear()  #  Remove all user-task relationships
+        super().delete(*args, **kwargs)  # Now delete task safely
 
     def __str__(self):
         return f"{self.name} - {self.status}"

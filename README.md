@@ -4,8 +4,8 @@ Task Manager is a Django-based application that allows users to create, assign, 
 
 ## Features
 - User authentication (Register, Login, Logout)
-- Task creation with optional assignment to users
-- Assign users to an existing task
+- Task creation 
+- Assign task to users
 - Update task status
 - View tasks assigned to a user
 - REST API endpoints for task management
@@ -16,13 +16,13 @@ Task Manager is a Django-based application that allows users to create, assign, 
 
 | Route | Method | Description |
 |--------|--------|-------------|
-| `/login/` | GET, POST | User login page |
-| `/register/` | GET, POST | User registration page |
-| `/logout/` | GET | Logout user and redirect to login |
-| `/tasks/` | GET | Displays tasks created by or assigned to the logged-in user |
-| `/tasks/create/` | GET, POST | Create a new task (with optional user assignment) |
-| `/tasks/<task_id>/assign/` | GET, POST | Assign users to an existing task |
-| `/tasks/update_status/<task_id>/` | POST | Update the status of a task |
+| `/web/login/` | GET, POST | User login page |
+| `/web/register/` | GET, POST | User registration page |
+| `/web/logout/` | GET | Logout user and redirect to login |
+| `/web/tasks/` | GET | Displays tasks created by or assigned to the logged-in user |
+| `/web/tasks/create/` | GET, POST | Create a new task  |
+| `/web/tasks/<task_id>/assign/` | GET, POST | Assign users to an existing task |
+| `/web/tasks/update_status/<task_id>/` | POST | Update the status of a task |
 
 ---
 
@@ -30,13 +30,13 @@ Task Manager is a Django-based application that allows users to create, assign, 
 
 | Endpoint | Method | Description |
 |-----------|--------|-------------|
-| `/api/tasks/` | GET | Fetch all tasks assigned to a specific user (requires `email` query parameter) |
-| `/api/tasks/create/` | POST | Create a new task |
-| `/api/tasks/<task_id>/assign/` | POST | Assign a task to users |
+| `/web/api/tasks/` | GET | Fetch all tasks assigned to a specific user (requires `email` query parameter) |
+| `/web/api/tasks/create/` | POST | Create a new task |
+| `/web/api/tasks/<task_id>/assign/` | POST | Assign a task to users |
 
 ### **API Request & Response Examples**
 
-#### 1️⃣ Create a Task (POST `/api/tasks/create/`)
+#### 1️⃣ Create a Task (POST `/web/api/tasks/create/`)
 ##### Request:
 ```json
 {
@@ -55,7 +55,7 @@ Task Manager is a Django-based application that allows users to create, assign, 
 }
 ```
 
-#### 2️⃣ Assign Users to a Task (POST `/api/tasks/<task_id>/assign/`)
+#### 2️⃣ Assign Users to a Task (POST `/web/api/tasks/<task_id>/assign/`)
 ##### Request:
 ```json
 {
@@ -69,7 +69,7 @@ Task Manager is a Django-based application that allows users to create, assign, 
 }
 ```
 
-#### 3️⃣ Fetch Tasks for a User (GET `/api/tasks/?email=user@example.com`)
+#### 3️⃣ Fetch Tasks for a User (GET `/web/api/tasks/?email=user@example.com`)
 ##### Response:
 ```json
 {
@@ -156,7 +156,7 @@ Now visit `http://127.0.0.1:8000/` to use the web UI or test the API routes usin
 
 ## **Additional Notes**
 - The application does not require authentication for API calls.
-- If `created_by` is `null`, tasks will be assigned to a default system user.
+- Tasks must be created with a `created_by` user; it cannot be null.
 - Tasks cannot be assigned after they are marked **Completed**.
 - Tasks can only be updated by assigned users.
 

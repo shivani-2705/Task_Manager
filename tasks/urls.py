@@ -19,6 +19,6 @@ urlpatterns = [
 
     # ✅ Task Management (API)
     path('api/tasks/create/', api_create_task, name='api_create_task'),
-    path('api/tasks/', api_list_tasks, name='api_list_tasks'),  # ✅ Fetch user-specific tasks
-    path('api/tasks/<int:task_id>/assign/', api_assign_users, name='api_assign_users'),  # ✅ Assign users via API
+    path('api/tasks/', api_list_tasks, name='api_list_tasks'),  
+    path('api/tasks/<int:task_id>/assign/', api_assign_users, name='api_assign_users'),  
 ]
